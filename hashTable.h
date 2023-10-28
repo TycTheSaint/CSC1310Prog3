@@ -1,7 +1,6 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 #include <string>
-#include "sha256.h"
 using std::string;
 
 //hashTable class

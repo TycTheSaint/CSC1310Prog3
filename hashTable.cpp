@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>
+#include "sha256.h"
 #include "hashTable.h"
 using std::string;
 using std::cout;
@@ -9,6 +10,7 @@ hashTable::hashTable(int tableSize)
 {
 	//you need to add everything else that belongs in the constructor--------------------------------------
 	hashArray = new entry*[tableSize]; //Dynamically allocates the array of pointers hashArray
+	this->tableSize=tableSize;
 
 	for(int i = 0; i < tableSize; i++)
 	{
@@ -48,6 +50,7 @@ string hashTable::generateSalt()
 	
 	for(int i = 0; i < tableSize; i++)
 		s = s + char('!' + (rand() % 93));
+
 	return s;
 }
 
@@ -178,6 +181,7 @@ bool hashTable::removeUser(string userNme, string passWrd) //password is plain t
 		prev = curr;
 		curr = curr->next;
 	}
+	return false;
 }
 
 //Searches for a given username in the database
