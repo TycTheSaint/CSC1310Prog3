@@ -1,3 +1,11 @@
+/*
+	Title:  hashTable.h
+	Author:  Tyce Webster & Isaac Essex
+    Course: CSC 1310-001
+	Date:  10/28/2023
+    Due: 11/02/2023
+	Purpose: Create a hash table for the purpose of hashing passwords and stores users login credentials
+*/
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 #include <string>
