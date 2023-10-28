@@ -85,6 +85,7 @@ void hashTable::addEntry(string val1, string val2, string val3) //GOOD?
 	//Check if bucket is empty
 	if(hashArray[index] == NULL)
 	{
+		cout<<"\n\nEmpty Bucket\n\n";
 		hashArray[index] = userEntry;
 	}
 	else
@@ -96,6 +97,7 @@ void hashTable::addEntry(string val1, string val2, string val3) //GOOD?
 		//Iterating through list
 		while(curr->next != NULL)
 		{
+			cout<<"\n\n"<<curr->getUsername()<<"\n"<<userEntry->getUsername()<<"\n\n";
 			//Check for username duplicity
 			if(curr->getUsername()==userEntry->getUsername())
 			{
@@ -110,6 +112,13 @@ void hashTable::addEntry(string val1, string val2, string val3) //GOOD?
 			}
 		}
 
+		if(curr->getUsername()==userEntry->getUsername()){
+			//Deallocate and return early if the name is already taken
+			cout<<"\nThis username has already been taken. Input a different one.";
+			delete userEntry;
+			return;
+		}
+		
 		curr->next = userEntry;
 	}
 }
