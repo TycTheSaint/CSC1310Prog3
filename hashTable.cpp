@@ -5,10 +5,9 @@
 using std::string;
 using std::cout;
 
-hashTable::hashTable(int size)
+hashTable::hashTable(int tableSize)
 {
 	//you need to add everything else that belongs in the constructor--------------------------------------
-	tableSize = size; //Sets tableSize to value of size
 	hashArray = new entry*[tableSize]; //Dynamically allocates the array of pointers hashArray
 
 	for(int i = 0; i < tableSize; i++)
@@ -52,11 +51,11 @@ string hashTable::generateSalt()
 	return s;
 }
 
-string hashTable::getSalt(string value) fefeofoweofw
+string hashTable::getSalt(string userN) //NEVER CALLED
 {
 	entry* userEntry;
 
-	userEntry = getEntry(value);
+	userEntry = getEntry(userN);
 
 	if(userEntry != NULL)
 	{
@@ -69,41 +68,68 @@ string hashTable::getSalt(string value) fefeofoweofw
 	}
 }
 
-void hashTable::addEntry(string val1, string val2, string val3) foefoesaf
+//Dynamically allocates the new entry to the list
+void hashTable::addEntry(string val1, string val2, string val3) //GOOD?
 {
 	entry* userEntry;
 	int index;
 
+	//Allocate new user and find its bucket
 	userEntry = new entry(val1, val2, val3);
-	index = hash(val1);
+	index = hash(val1); //find bucket
 
+
+	//Check if bucket is empty
 	if(hashArray[index] == NULL)
 	{
 		hashArray[index] = userEntry;
 	}
 	else
 	{
+		//If backet is not empty, we must ensure there are no duplicate usernames
 		entry* curr;
 		curr = hashArray[index];
 
+		//Iterating through list
 		while(curr->next != NULL)
 		{
+			//Check for username duplicity
+			if(curr->getUsername()==userEntry->getUsername())
+			{
+				//Deallocate and return early if the name is already taken
+				cout<<"\nThis username has already been taken. Input a different one.";
+				delete userEntry;
+				return;
+			}
+			else
+			{
 			curr = curr->next;
+			}
 		}
 
 		curr->next = userEntry;
 	}
 }
 
-bool hashTable::validateLogin(string userNme, string passWrd) 
+//Checks the validity of login credentials
+bool hashTable::validateLogin(string userNme, string passWrd) //password is plain text
 {
 	entry* userEntry;
 
 	userEntry = getEntry(userNme);
 
-	if(userEntry != NULL && userEntry->getHashedPwd() == passWrd)
+	//Check if the user exists
+	if(userEntry != NULL)
 	{
+		//hash the given password and compare to the user's password
+		passWrd.append(userEntry->getSalt()); //salt it
+		passWrd=sha256(passWrd); //hash it
+		
+		//Compare the encoded passwords
+		if(userEntry->getHashedPwd() == passWrd)
 		return true;
+		else
+		return false;
 	}
 	else
 	{
@@ -111,7 +137,7 @@ bool hashTable::validateLogin(string userNme, string passWrd)
 	}
 }
 
-bool hashTable::removeUser(string userNme, string passWrd) fbebfuieh
+bool hashTable::removeUser(string userNme, string passWrd) //password is plain text
 {
 	entry* curr;
 	entry* prev;
@@ -125,6 +151,10 @@ bool hashTable::removeUser(string userNme, string passWrd) fbebfuieh
 	{
 		if(curr->getUsername() == userNme)
 		{
+			//hash the given password and compare to the user's password
+			passWrd.append(curr->getSalt()); //salt it
+			passWrd=sha256(passWrd); //hash it
+
 			if(curr->getHashedPwd() == passWrd)
 			{
 				if(prev == NULL)
@@ -150,17 +180,22 @@ bool hashTable::removeUser(string userNme, string passWrd) fbebfuieh
 	}
 }
 
-hashTable::entry* hashTable::getEntry(string key) fhewoufhwou
+//Searches for a given username in the database
+hashTable::entry* hashTable::getEntry(string key) 
 {
+	//pointer for iterating
 	entry* ptr;
 	int index;
 
+	//find our desired bucket based the username
 	index = hash(key);
-	ptr = hashArray[index];
+	ptr = hashArray[index]; //point to the bucket
 
+	//search through the bucket until we reach the end of the bucket or
+	//find the user in question
 	while(ptr != NULL)
 	{
-		if(ptr->getUsername() == key)
+		if(ptr->getUsername() == key) //comparing usernames
 		{
 			return ptr;
 		}
@@ -171,7 +206,7 @@ hashTable::entry* hashTable::getEntry(string key) fhewoufhwou
 	return NULL; //If the key does not correspond to the table
 }
 
-hashTable::entry::entry(string userName, string userSalt, string userHashPwd)
+hashTable::entry::entry(string userName, string userHashPwd, string userSalt)
 {
 	uname = userName;
 	salt = userSalt;
