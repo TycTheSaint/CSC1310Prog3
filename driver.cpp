@@ -21,18 +21,13 @@ int main()
 	//dynamically allocate your hash table-------------------------------------------------------------------------------
 	hashTbl=new hashTable(numUsers);
 
-	cout<<"\nnumUsers: "<<numUsers<<endl;
 	while(getline(file, user))
 	{
-		cout<<"\nReading file input\n";
 		getline(file, pwd);
 		//generate a salt and add the new user to your table--------------------------------------------------------
-		cout<<"\nsalt\n";
 		salt=hashTbl->generateSalt();
 		pwd.append(salt);
-		cout<<"\nencrypt\n";
 		pwd=sha256(pwd); //hashing
-		cout<<"\nadding entry\n";
 		hashTbl->addEntry(user, pwd, salt);
 	}}
 	
@@ -71,8 +66,8 @@ int main()
 					
 					//generate a salt for the new user and add the user to the table--------------------
 					salt=hashTbl->generateSalt();
-					pwd.append(salt);
-					pwd=sha256(pwd); //hashing
+					password.append(salt);
+					password=sha256(password); //hashing
 					hashTbl->addEntry(username, password, salt);
 					break;
 					
